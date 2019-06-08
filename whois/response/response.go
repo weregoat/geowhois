@@ -81,9 +81,14 @@ func GetCountry(response []byte) (country string, err error) {
 			return country, err
 		}
 		// fmt.Printf(string(response))
-		match := re.FindSubmatch(response)
-		if len(match) >= 2 {
-			country = strings.ToUpper(strings.TrimSpace(string(match[1])))
+		matches := re.FindAllSubmatch(response, -1)
+		last := len(matches)
+		index := last - 1
+		if index >= 0 {
+			match := matches[index]
+			if len(match) >= 2 {
+				country = strings.ToUpper(strings.TrimSpace(string(match[1])))
+			}
 		}
 	}
 	return

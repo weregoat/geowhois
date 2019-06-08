@@ -39,6 +39,7 @@ func main() {
 			"parsdata.com",
 			"serv-mail.info",
 			"vipps.no",
+			"192.121.232.143",
 		}
 	}
 	// If both client and server parameters are empty, we set them with the defaults

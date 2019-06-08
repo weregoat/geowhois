@@ -5,9 +5,6 @@ import (
 	"goat-whois/whois/sources"
 )
 
-
-
-
 type client struct {
 	Sources []sources.Source
 }
@@ -19,7 +16,7 @@ func New(sources ...sources.Source) client {
 }
 
 func (c *client) Query(resource string) (data response.Response) {
-	for _,source := range c.Sources {
+	for _, source := range c.Sources {
 		data = source.Query(resource)
 		if data.IsValid() {
 			break
@@ -27,5 +24,3 @@ func (c *client) Query(resource string) (data response.Response) {
 	}
 	return data
 }
-
-
