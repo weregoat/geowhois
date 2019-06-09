@@ -1,6 +1,6 @@
 package sources
 
-import "goat-whois/whois/response"
+import "github.com/weregoat/goat-whois/whois/response"
 
 type Source interface {
 	Query(resource string) response.Response

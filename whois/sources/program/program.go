@@ -1,8 +1,8 @@
 package program
 
 import (
-	"goat-whois/whois/response"
-	"goat-whois/whois/sources"
+	"github.com/weregoat/goat-whois/whois/response"
+	"github.com/weregoat/goat-whois/whois/sources"
 	"os/exec"
 )
 
