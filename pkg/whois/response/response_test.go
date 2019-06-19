@@ -6,25 +6,25 @@ import (
 )
 
 func TestResponse_IsValid(t *testing.T) {
-	validResponses := []Response {
+	validResponses := []Response{
 		{"something", "SE", "", []byte("body"), nil},
 		{"something", "", "192.168.0.0/16", []byte("body"), nil},
 		{"something", "SE", "192.168.0.0/16", []byte("body"), nil},
 	}
 	for _,response := range validResponses {
-		if ! response.IsValid() {
+		if ! IsValid() {
 			t.Errorf("Valid response %q marked as invalid", response)
 		}
 	}
 
-	invalidResponses := []Response {
+	invalidResponses := []Response{
 		{"", "SE", "", []byte("body"), nil},
 		{"something", "", "", []byte("body"), nil},
 		{Resource: "something", CountryCode: "SE", CIDR: "192.168.0.0/16", Error: nil},
 		{"something", "SE", "", []byte("body"), errors.New("error")},
 	}
 	for _,response := range invalidResponses {
-		if response.IsValid() {
+		if IsValid() {
 			t.Errorf("invalid response %q marked as valid", response)
 		}
 	}

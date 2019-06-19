@@ -1,8 +1,8 @@
 package whois
 
 import (
-	"github.com/weregoat/goat-whois/whois/response"
-	"github.com/weregoat/goat-whois/whois/sources"
+	"github.com/weregoat/goat-whois/pkg/whois/response"
+	"github.com/weregoat/goat-whois/pkg/whois/sources"
 )
 
 type client struct {

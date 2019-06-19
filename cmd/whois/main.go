@@ -3,10 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/weregoat/goat-whois/whois"
-	whoiSources "github.com/weregoat/goat-whois/whois/sources"
-	whoisProgram "github.com/weregoat/goat-whois/whois/sources/program"
-	whoisServer "github.com/weregoat/goat-whois/whois/sources/server"
+	"github.com/weregoat/goat-whois/pkg/whois"
+	whoiSources "github.com/weregoat/goat-whois/pkg/whois/sources"
+	whoisProgram "github.com/weregoat/goat-whois/pkg/whois/sources/program"
+	whoisServer "github.com/weregoat/goat-whois/pkg/whois/sources/server"
 )
 
 
