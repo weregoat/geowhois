@@ -40,10 +40,15 @@ func main() {
 	}
 	client := whois.New(sources...)
 	for _,target := range targets {
-		fmt.Printf("querying for %s\n", target)
+		fmt.Printf("Query for %s:\n", target)
 		response := client.Query(target)
 		if response.IsValid() {
-			fmt.Printf("CIDR: %s\nCountryCode: %s\n---\n", response.CIDR, response.CountryCode)
+			fmt.Printf("CIDR: %s\n", response.CIDR)
+			fmt.Printf("CountryCode: %s\n", response.CountryCode)
+			if len(response.CountryCodes) > 1 {
+				fmt.Printf("Other countries: %s\n",response.CountryCode[:len(response.CountryCodes)])
+			}
+			fmt.Println("---")
 		} else {
 			if response.Error != nil {
 				fmt.Printf("Error querying for %s: %s\n---\n", target, response.Error.Error())
