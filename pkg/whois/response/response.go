@@ -73,23 +73,31 @@ func (r *Response) parse(response []byte) {
 
 // getCountries tries to extract the country codes from a whois response.
 func GetCountries(response []byte) (countries []string, err error) {
-	patterns := [2]string {
-		`Registrant Country:[[:blank:]]*([A-Z]{2})[[:space:]]`,
-		`(?i:country):[[:blank:]]*([[:alpha:]]{2})[[:space:]]`,
+	patterns := [1]string {
+		// `Registrant Country:[[:blank:]]*([A-Z]{2})[[:space:]]`, // Redundant
+		`(?i:country):[[:blank:]]*([[:alpha:]]{2})[[:space:]]+`,
 	}
 	for _,pattern := range patterns {
 		re, err := regexp.Compile(pattern)
 		if err != nil {
 			return countries, err
 		}
-		// fmt.Printf(string(response))
 		// https://golang.org/pkg/regexp/#Regexp.FindAllStringSubmatch
 		matches := re.FindAllSubmatch(response, -1)
 		for _,match := range matches {
 			if len(match) == 2 {
-				country := string(match[1])
+				country := strings.ToUpper(string(match[1]))
 				if len(country) == 2 {
-					countries = append(countries, strings.ToUpper(country))
+					duplicate := false
+					for _,present := range countries {
+						if present == country {
+							duplicate = true
+							break
+						}
+					}
+					if ! duplicate {
+						countries = append(countries, strings.ToUpper(country))
+					}
 				}
 			}
 		}
