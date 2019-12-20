@@ -10,10 +10,11 @@ import (
 // Record represent information about Whois query and response
 type Response struct {
 	Resource    string
-	CountryCode string
+	CountryCode string // Last country code
 	CIDR        string
 	Raw         []byte
 	Error       error
+	CountryCodes    []string // All country codes
 }
 
 // New generates a new Record
@@ -55,11 +56,12 @@ func (r *Response) IsValid() bool {
 // parse parses the response from a whois source and tries to extract the country-code and CIDR.
 func (r *Response) parse(response []byte) {
 	r.Raw = response
-	country, err := GetCountry(r.Raw)
+	countries, err := GetCountries(r.Raw)
 	r.Error = err
 	if r.Error == nil {
-		if len(country) == 2 {
-			r.CountryCode = country
+		r.CountryCodes = countries
+		if len(countries) >= 1 {
+			r.CountryCode = countries[len(countries)-1]
 		}
 		cidr, err := GetCIDR(r.Raw)
 		r.Error = err
@@ -69,8 +71,8 @@ func (r *Response) parse(response []byte) {
 	}
 }
 
-// getCountry tries to extract the country code from a whois response.
-func GetCountry(response []byte) (country string, err error) {
+// getCountries tries to extract the country codes from a whois response.
+func GetCountries(response []byte) (countries []string, err error) {
 	patterns := [2]string {
 		`Registrant Country:[[:blank:]]*([A-Z]{2})[[:space:]]`,
 		`(?i:country):[[:blank:]]*([[:alpha:]]{2})[[:space:]]`,
@@ -78,16 +80,17 @@ func GetCountry(response []byte) (country string, err error) {
 	for _,pattern := range patterns {
 		re, err := regexp.Compile(pattern)
 		if err != nil {
-			return country, err
+			return countries, err
 		}
 		// fmt.Printf(string(response))
+		// https://golang.org/pkg/regexp/#Regexp.FindAllStringSubmatch
 		matches := re.FindAllSubmatch(response, -1)
-		last := len(matches)
-		index := last - 1
-		if index >= 0 {
-			match := matches[index]
-			if len(match) >= 2 {
-				country = strings.ToUpper(strings.TrimSpace(string(match[1])))
+		for _,match := range matches {
+			if len(match) == 2 {
+				country := string(match[1])
+				if len(country) == 2 {
+					countries = append(countries, strings.ToUpper(country))
+				}
 			}
 		}
 	}

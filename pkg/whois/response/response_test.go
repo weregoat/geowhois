@@ -7,24 +7,24 @@ import (
 
 func TestResponse_IsValid(t *testing.T) {
 	validResponses := []Response{
-		{"something", "SE", "", []byte("body"), nil},
-		{"something", "", "192.168.0.0/16", []byte("body"), nil},
-		{"something", "SE", "192.168.0.0/16", []byte("body"), nil},
+		{"something", "SE", "", []byte("body"), nil, []string{"SE"}},
+		{"something", "", "192.168.0.0/16", []byte("body"), nil, []string{}},
+		{"something", "SE", "192.168.0.0/16", []byte("body"), nil, []string{"SE"}},
 	}
 	for _,response := range validResponses {
-		if ! IsValid() {
+		if ! response.IsValid() {
 			t.Errorf("Valid response %q marked as invalid", response)
 		}
 	}
 
 	invalidResponses := []Response{
-		{"", "SE", "", []byte("body"), nil},
-		{"something", "", "", []byte("body"), nil},
-		{Resource: "something", CountryCode: "SE", CIDR: "192.168.0.0/16", Error: nil},
-		{"something", "SE", "", []byte("body"), errors.New("error")},
+		{"", "SE", "", []byte("body"), nil, []string{}},
+		{"something", "", "", []byte("body"), nil, []string{}},
+		{Resource: "something", CountryCode: "SE", CIDR: "192.168.0.0/16", Error: nil, CountryCodes: []string{"SE"}},
+		{"something", "SE", "", []byte("body"), errors.New("error"), []string{"SE"}},
 	}
 	for _,response := range invalidResponses {
-		if IsValid() {
+		if response.IsValid() {
 			t.Errorf("invalid response %q marked as valid", response)
 		}
 	}
@@ -51,7 +51,7 @@ func TestGetCIDR(t *testing.T) {
 	}
 }
 
-func TestGetCountry(t *testing.T) {
+func TestGetCountries(t *testing.T) {
 	payloads := map[string]string {
 		"PA" : "Registrant Country: PA ",
 		"BB" : "Registrant Country: PA\nblablah\nRegistrant Country: BB\n",
@@ -59,12 +59,12 @@ func TestGetCountry(t *testing.T) {
 		"PP" : "country: PP ",
 	}
 	for expected, payload := range payloads {
-		isoCode,err := GetCountry([]byte(payload))
+		isoCodes,err := GetCountries([]byte(payload))
 		if err != nil {
 			t.Error(err)
 		}
-		if isoCode != expected {
-			t.Errorf("failed to correctly extract Country from %s; expected %s, got %s", payload, expected, isoCode)
+		if isoCodes[len(isoCodes)-1] != expected {
+			t.Errorf("failed to correctly extract Country from %s; expected %s, got %s", payload, expected, isoCodes)
 		}
 	}
 }
