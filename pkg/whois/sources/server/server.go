@@ -44,6 +44,10 @@ func (s *server) String() string {
 	return s.source
 }
 
+func (s *server) Class() sources.Class {
+	return sources.Server
+}
+
 func (s *server) queryServer(server, target string) (response []byte, err error){
 	if len(server) == 0 {
 		server = IANAServer

@@ -38,3 +38,7 @@ func (p *program) Query(resource string) (data response.Response) {
 func (p *program) String() string {
 	return p.source
 }
+
+func (p *program) Class() sources.Class {
+	return sources.Program
+}
